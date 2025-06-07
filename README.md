@@ -4,12 +4,12 @@
 - defaultValue - [initial value for datepicker]
 - onChange - [returns date on change]
 - minValidYear
-- maxValidYear
+- maxValidYear 
 - emptyOnInvalid - [reset to currnt date value or empty on invalid input]
-- separator
+- separator - [/,-]
 - onKeyDown - [returns key down event to handle enter click]
 - triggerReset - [contains a state on chage of the state reset the value]
 - placeholder - [custom placeholder]
 - disabled
-- ariaLabel
+- ariaLabel - [for input accesibility]
 - preventFocusingOutFromInput
