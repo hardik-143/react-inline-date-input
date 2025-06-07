@@ -21,6 +21,11 @@
   outline: none;
   text-align: center;
   cursor: text;
+  border: 1px solid transparent;
+  user-select: none;
+  &:focus-visible {
+    border: 1px solid #000;
+  }
 }
 
 .separator {

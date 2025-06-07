@@ -26,13 +26,14 @@ const Demo = () => {
               </label>
               <div className="flex items-stretch gap-2 justify-between">
                 <ReactInlineDateInput
-                  defaultValue={"12/12/2020"}
+                  defaultValue={date}
                   onChange={(_date: string) => {
                     setDate(_date);
                   }}
                   minValidYear={1950}
                   maxValidYear={2020}
                   triggerReset={triggerReset}
+                  preventFocusingOutFromInput={true}
                 />
                 <button
                   onClick={() => {
@@ -132,9 +133,4 @@ const Demo = () => {
   );
 };
 
-export default memo(Demo, (prevProps: any, nextProps: any) => {
-  return (
-    prevProps.onChange === nextProps.onChange &&
-    prevProps.triggerReset === nextProps.triggerReset
-  );
-});
+export default Demo;

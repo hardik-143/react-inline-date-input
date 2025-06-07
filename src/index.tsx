@@ -1,7 +1,15 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import moment from "moment";
 import "./scss/main.scss";
+import {
+  pad,
+  getFocusableElement,
+  selectAllContent,
+  moveCursorToEnd,
+  checkTextSelectionLength,
+} from "./utils";
+import { DEFAULT_PLACEHOLDER } from "./constants";
 
 interface DateInputProps {
   className?: string;
@@ -20,6 +28,7 @@ interface DateInputProps {
   };
   disabled?: boolean;
   ariaLabel?: string;
+  preventFocusingOutFromInput?: boolean;
 }
 
 const ReactInlineDateInput = ({
@@ -32,20 +41,25 @@ const ReactInlineDateInput = ({
   separator = "-",
   onKeyDown = () => {},
   triggerReset = false,
-  placeholder = {
-    day: "DD",
-    month: "MM",
-    year: "YYYY",
-  },
+  placeholder = DEFAULT_PLACEHOLDER,
   disabled = false,
   ariaLabel = "Date input",
+  preventFocusingOutFromInput = false,
 }: DateInputProps) => {
-  const dateMoment = moment(defaultValue, "DD/MM/YYYY");
+  const initialDefaultValueRef = useRef(defaultValue);
+
+  const dateMoment = moment(initialDefaultValueRef.current, "DD/MM/YYYY");
   const validDate = dateMoment.isValid() ? dateMoment : null;
 
-  const currentDay = validDate ? defaultValue.split("/")[0] : "";
-  const currentMonth = validDate ? defaultValue.split("/")[1] : "";
-  const currentYear = validDate ? defaultValue.split("/")[2] : "";
+  const currentDay = validDate
+    ? initialDefaultValueRef.current.split("/")[0]
+    : "";
+  const currentMonth = validDate
+    ? initialDefaultValueRef.current.split("/")[1]
+    : "";
+  const currentYear = validDate
+    ? initialDefaultValueRef.current.split("/")[2]
+    : "";
 
   const onInvalid: { date: string; month: string; year: string } = {
     date: emptyOnInvalid ? "" : moment().date().toString(),
@@ -53,46 +67,31 @@ const ReactInlineDateInput = ({
     year: emptyOnInvalid ? "" : moment().year().toString(),
   };
 
-  const pad = (n: any) => n.toString().padStart(2, "0");
-
   const dayRef = useRef<any>(null);
   const monthRef = useRef<any>(null);
   const yearRef = useRef<any>(null);
+  const [nextFocusable, setNextFocusable] = useState<HTMLElement | null>(null);
+  const [previousFocusable, setPreviousFocusable] =
+    useState<HTMLElement | null>(null);
 
-  const selectAllContent = (element: HTMLElement) => {
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    const selection = window.getSelection();
-    if (selection) {
-      selection.removeAllRanges();
-      selection.addRange(range);
+  useEffect(() => {
+    if (yearRef.current && !preventFocusingOutFromInput) {
+      setNextFocusable(getFocusableElement(yearRef.current, "next"));
     }
-  };
+  }, [yearRef, preventFocusingOutFromInput]);
+
+  useEffect(() => {
+    if (dayRef.current && !preventFocusingOutFromInput) {
+      setPreviousFocusable(getFocusableElement(dayRef.current, "previous"));
+    }
+  }, [dayRef]);
+
   useEffect(() => {
     dayRef.current.textContent = "";
     monthRef.current.textContent = "";
     yearRef.current.textContent = "";
   }, [triggerReset]);
 
-  const moveCursorToEnd = (element: HTMLElement) => {
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    range.collapse(false); // collapse to end
-    const sel = window.getSelection();
-    if (sel) {
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-  };
-  const checkTextSelectionLength = () => {
-    const selection = window.getSelection();
-    if (selection) {
-      const range = selection.getRangeAt(0);
-      const text = range.toString();
-      return text.length;
-    }
-    return 0;
-  };
   const handleKeyDown = (e: any, currentRef: any) => {
     onKeyDown(e);
     const isShiftTab = e.key === "Tab" && e.shiftKey;
@@ -115,8 +114,13 @@ const ReactInlineDateInput = ({
       } else if (currentRef === monthRef && yearRef.current) {
         yearRef.current.focus();
         selectAllContent(yearRef.current);
+      } else if (currentRef === yearRef) {
+        if (nextFocusable) {
+          nextFocusable.focus();
+        }
       }
     } else if (isShiftTab || e.key === "ArrowLeft") {
+      console.log("isShiftTab", isShiftTab);
       e.preventDefault();
       if (currentRef === yearRef && monthRef.current) {
         monthRef.current.focus();
@@ -124,6 +128,10 @@ const ReactInlineDateInput = ({
       } else if (currentRef === monthRef && dayRef.current) {
         dayRef.current.focus();
         selectAllContent(dayRef.current);
+      } else if (currentRef === dayRef) {
+        if (previousFocusable) {
+          previousFocusable.focus();
+        }
       }
     }
 
@@ -214,13 +222,24 @@ const ReactInlineDateInput = ({
   };
 
   const handleAutoFocus = (ref: any, nextRef: any, maxLength: number) => {
+    ref.current.addEventListener("click", () => {
+      setTimeout(() => {
+        selectAllContent(ref.current);
+      }, 0);
+    });
     ref.current.addEventListener("input", () => {
       const text = ref.current.textContent.replace(/\D/g, "");
       ref.current.textContent = text;
       moveCursorToEnd(ref.current);
       if (text.length >= maxLength) {
-        nextRef?.current?.focus();
-        selectAllContent(nextRef.current);
+        if (nextRef?.current) {
+          nextRef?.current?.focus();
+          selectAllContent(nextRef?.current);
+        } else {
+          if (nextFocusable) {
+            nextFocusable.focus();
+          }
+        }
       }
       returnHandleOnChange();
     });
@@ -283,12 +302,13 @@ const ReactInlineDateInput = ({
       className={`date-input ${className} ${disabled ? "disabled " : ""}`}
       role="group"
       aria-label={ariaLabel}
+      aria-disabled={disabled}
     >
       <span
         className="date-span"
         ref={dayRef}
         contentEditable={!disabled}
-        data-placeholder={placeholder.day}
+        data-placeholder={placeholder.day || DEFAULT_PLACEHOLDER.day}
         onBlur={() => handleBlur(dayRef, 1, 31, onInvalid.date)}
         onKeyDown={(e) => handleKeyDown(e, dayRef)}
         onKeyUp={() => {
@@ -298,6 +318,7 @@ const ReactInlineDateInput = ({
         aria-label="Day"
         aria-valuemin={1}
         aria-valuemax={31}
+        aria-valuenow={parseInt(dayRef?.current?.textContent || "0") || 0}
         tabIndex={disabled ? -1 : 0}
       ></span>
       <span className="separator" aria-hidden="true">
@@ -307,7 +328,7 @@ const ReactInlineDateInput = ({
         className="date-span"
         ref={monthRef}
         contentEditable={!disabled}
-        data-placeholder={placeholder.month}
+        data-placeholder={placeholder.month || DEFAULT_PLACEHOLDER.month}
         onBlur={() => handleBlur(monthRef, 1, 12, onInvalid.month)}
         onKeyDown={(e) => handleKeyDown(e, monthRef)}
         onKeyUp={() => {
@@ -317,6 +338,7 @@ const ReactInlineDateInput = ({
         aria-label="Month"
         aria-valuemin={1}
         aria-valuemax={12}
+        aria-valuenow={parseInt(monthRef?.current?.textContent || "0") || 0}
         tabIndex={disabled ? -1 : 0}
       ></span>
       <span className="separator" aria-hidden="true">
@@ -326,7 +348,7 @@ const ReactInlineDateInput = ({
         className="date-span"
         ref={yearRef}
         contentEditable={!disabled}
-        data-placeholder={placeholder.year}
+        data-placeholder={placeholder.year || DEFAULT_PLACEHOLDER.year}
         onBlur={() =>
           handleBlur(yearRef, minValidYear, maxValidYear, onInvalid.year, false)
         }
@@ -336,6 +358,7 @@ const ReactInlineDateInput = ({
         aria-label="Year"
         aria-valuemin={minValidYear}
         aria-valuemax={maxValidYear}
+        aria-valuenow={parseInt(yearRef?.current?.textContent || "0") || 0}
         tabIndex={disabled ? -1 : 0}
       ></span>
     </div>
