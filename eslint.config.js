@@ -7,6 +7,9 @@ import reactHooks from "eslint-plugin-react-hooks";
 
 /** @type {import("eslint").Linter.FlatConfig[]} */
 export default [
+  {
+    ignores: ["dist", "node_modules"],
+  },
   js.configs.recommended,
   {
     files: ["**/*.ts", "**/*.tsx"],
@@ -39,10 +42,9 @@ export default [
       "react-hooks": reactHooks,
     },
     rules: {
-      // "@typescript-eslint/no-unused-vars": ["warn"],
       "no-unused-vars": "warn",
-      // "react/react-in-jsx-scope": "off",
-      // "react/prop-types": "off",
+      // "react/react-in-jsx-scope": "warn",
+      "react/prop-types": "warn",
       // ...ts.configs.recommended.rules,
       // ...reactPlugin.configs.recommended.rules,
       // ...reactHooks.configs.recommended.rules,

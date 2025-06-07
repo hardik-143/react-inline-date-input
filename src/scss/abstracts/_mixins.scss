@@ -1,0 +1,10 @@
+@mixin disabled-ui($opacity: 0.5) {
+  cursor: not-allowed;
+  user-select: none;
+  opacity: $opacity;
+  * {
+    cursor: not-allowed;
+    user-select: none;
+    opacity: $opacity;
+  }
+}

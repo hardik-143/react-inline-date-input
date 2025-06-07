@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import moment from "moment";
+import "./scss/main.scss";
 
 interface DateInputProps {
   className?: string;
@@ -8,7 +9,7 @@ interface DateInputProps {
   onChange?: (dateString: string) => void;
   minValidYear?: number;
   maxValidYear?: number;
-  useEmptyToReset?: boolean;
+  emptyOnInvalid?: boolean;
   separator?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
   triggerReset?: boolean;
@@ -27,7 +28,7 @@ const ReactInlineDateInput = ({
   onChange = () => {},
   minValidYear = 1900,
   maxValidYear = moment().year(),
-  useEmptyToReset = true,
+  emptyOnInvalid = true,
   separator = "-",
   onKeyDown = () => {},
   triggerReset = false,
@@ -47,9 +48,9 @@ const ReactInlineDateInput = ({
   const currentYear = validDate ? defaultValue.split("/")[2] : "";
 
   const onInvalid: { date: string; month: string; year: string } = {
-    date: useEmptyToReset ? "" : moment().date().toString(),
-    month: useEmptyToReset ? "" : (moment().month() + 1).toString(),
-    year: useEmptyToReset ? "" : moment().year().toString(),
+    date: emptyOnInvalid ? "" : moment().date().toString(),
+    month: emptyOnInvalid ? "" : (moment().month() + 1).toString(),
+    year: emptyOnInvalid ? "" : moment().year().toString(),
   };
 
   const pad = (n: any) => n.toString().padStart(2, "0");
@@ -166,7 +167,6 @@ const ReactInlineDateInput = ({
     padZero = true
   ) => {
     let val = parseInt(ref.current.textContent, 10);
-    console.log("val", val, min, max);
     if (isNaN(val) || val < min || val > max) {
       ref.current.textContent =
         defaultVal == "" ? "" : padZero ? pad(defaultVal) : defaultVal;
@@ -280,7 +280,7 @@ const ReactInlineDateInput = ({
 
   return (
     <div
-      className={`date-input ${className}`}
+      className={`date-input ${className} ${disabled ? "disabled " : ""}`}
       role="group"
       aria-label={ariaLabel}
     >
