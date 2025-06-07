@@ -1,6 +1,6 @@
 {
   "name": "react-inline-date-input",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A contenteditable DD-MM-YYYY date input for React",
   "main": "index.tsx",
   "module": "index.tsx",
