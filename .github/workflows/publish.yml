@@ -18,17 +18,13 @@
 #       - name: Set up Node.js
 #         uses: actions/setup-node@v3
 #         with:
-#           node-version: "18"
+#           node-version: "20"
 #           registry-url: "https://registry.npmjs.org/"
 
 #       - name: Install dependencies
-#         run: npm install
-
-#       # - name: Run build (optional)
-#       #   run: npm run build
-#       # Remove or comment this line if not needed
+#         run: pnpm install
 
 #       - name: Publish to npm
-#         run: npm publish
+#         run: pnpm publish
 #         env:
 #           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
