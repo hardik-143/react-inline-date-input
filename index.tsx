@@ -1,4 +1,3 @@
-import TheInlineDateInput from "./src/index";
+import ReactInlineDateInput from "./src/index";
 
-
-export default TheInlineDateInput;
+export default ReactInlineDateInput;

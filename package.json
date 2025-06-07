@@ -1,9 +1,10 @@
 {
   "name": "react-inline-date-input",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A contenteditable DD-MM-YYYY date input for React",
   "main": "index.tsx",
   "module": "index.tsx",
+  "homepage": "https://react-inline-date-input.vercel.app",
   "type": "module",
   "exports": {
     ".": {
