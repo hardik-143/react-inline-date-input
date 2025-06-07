@@ -1,30 +1,30 @@
 # name: Publish to npm
 
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - "package.json"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "package.json"
 
-# jobs:
-#   publish:
-#     runs-on: ubuntu-latest
+jobs:
+  publish:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: "20"
-#           registry-url: "https://registry.npmjs.org/"
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org/"
 
-#       - name: Install dependencies
-#         run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
-#       - name: Publish to npm
-#         run: pnpm publish
-#         env:
-#           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish to npm
+        run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
