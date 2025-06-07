@@ -1,0 +1,48 @@
+{
+  "name": "react-inline-date-input",
+  "version": "1.0.0",
+  "description": "A contenteditable DD-MM-YYYY date input for React",
+  "main": "index.tsx",
+  "module": "index.tsx",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.tsx"
+    }
+  },
+  "keywords": [
+    "react",
+    "date-input",
+    "contenteditable",
+    "dd-mm-yyyy",
+    "inline-date-input",
+    "react-inline-date-input",
+    "react-inline-date-input-component"
+  ],
+  "scripts": {
+    "dev:demo": "vite",
+    "build:demo": "vite build",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix"
+  },
+  "author": "Hardik Desai",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^4.5.1",
+    "moment": "^2.30.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^6.3.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
+    "eslint": "^9.28.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0"
+  }
+}

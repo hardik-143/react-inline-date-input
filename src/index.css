@@ -1,0 +1,28 @@
+.date-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.date-span {
+  min-width: 2ch;
+  padding: 0.2rem 0.5rem;
+  outline: none;
+  text-align: center;
+  cursor: text;
+}
+
+.separator {
+  padding: 0 0.2rem;
+}
+
+.date-span:empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  pointer-events: none;
+}
