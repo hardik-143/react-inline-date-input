@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ReactInlineDateInput from "../src/index";
-import { memo } from "react";
 
 const Demo = () => {
   const [date, setDate] = useState("");
